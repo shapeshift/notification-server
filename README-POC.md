@@ -10,36 +10,43 @@ The POC demonstrates a complete push notification system that:
 - Provides WebSocket real-time updates
 - Polls external swap APIs for status updates
 - Manages device registration for multiple platforms
+- Implements secure account ID hashing
+- Uses proper NestJS dependency injection patterns
 
 ## 🏗️ Architecture
 
 ### Core Components
 
 1. **Database Layer (Prisma + SQLite)**
-   - User management with account IDs
+   - User management with hashed account IDs
    - Device registration for push notifications
    - Swap tracking with comprehensive metadata
    - Notification history
 
 2. **Notification Service**
    - Expo push notification integration
-   - Device registration/unregistration
+   - Device registration
    - Notification delivery tracking
 
 3. **Swap Service**
    - Swap creation and status management
    - Integration with external swap APIs
    - Automatic notification triggering
+   - Account ID hashing for security
 
 4. **WebSocket Gateway**
    - Real-time communication
    - User authentication
    - Live swap status updates
 
-5. **Polling Service**
+5. **Chain Adapter Services**
+   - Modular chain adapter initialization
+   - EVM, UTXO, Cosmos SDK, and Solana support
+   - Proper dependency injection pattern
+
+6. **Polling Service**
    - Automated status checking
    - Account-based swap monitoring
-   - Cleanup of old data
 
 ## 🚀 Quick Start
 
@@ -60,7 +67,7 @@ The POC demonstrates a complete push notification system that:
    # Create .env file
    echo 'DATABASE_URL="file:./dev.db"' > .env
    echo 'EXPO_ACCESS_TOKEN="your-expo-access-token-here"' >> .env
-   echo 'SHAPESHIFT_API_KEY="your-shapeshift-api-key-here"' >> .env
+   echo 'ACCOUNT_ID_SALT="your-secure-salt-here-change-in-production"' >> .env
    ```
 
 3. **Generate Prisma client:**
@@ -70,7 +77,7 @@ The POC demonstrates a complete push notification system that:
 
 4. **Create database:**
    ```bash
-   npx prisma db push
+   npx prisma migrate dev --name init
    ```
 
 5. **Start the server:**
@@ -85,15 +92,19 @@ The POC demonstrates a complete push notification system that:
 -- Users with hashed account IDs
 User {
   id: String (CUID)
-  email: String (unique)
-  walletAddress: String (unique)
-  accountIds: String (JSON array)
+  createdAt: DateTime
+  updatedAt: DateTime
+  devices: Device[]
+  notifications: Notification[]
+  swaps: Swap[]
+  userAccounts: UserAccount[]
 }
 
 -- Many-to-many relationship for account IDs
 UserAccount {
   id: String (CUID)
   accountId: String (hashed)
+  createdAt: DateTime
   userId: String (foreign key)
 }
 ```
@@ -103,9 +114,12 @@ UserAccount {
 Device {
   id: String (CUID)
   deviceToken: String (unique, Expo token)
-  deviceType: DeviceType (IOS/ANDROID/WEB)
+  deviceType: DeviceType (MOBILE/WEB)
   isActive: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
   userId: String (foreign key)
+  notifications: Notification[]
 }
 ```
 
@@ -114,19 +128,36 @@ Device {
 Swap {
   id: String (CUID)
   swapId: String (unique, external ID)
-  sellAsset: String (Asset ID)
-  buyAsset: String (Asset ID)
+  sellAsset: String (JSON)
+  buyAsset: String (JSON)
   sellAmountCryptoBaseUnit: String
   expectedBuyAmountCryptoBaseUnit: String
+  sellAmountCryptoPrecision: String
+  expectedBuyAmountCryptoPrecision: String
+  actualBuyAmountCryptoPrecision: String?
   status: SwapStatus (IDLE/PENDING/SUCCESS/FAILED)
-  source: String (SwapSource)
-  swapperName: String (SwapperName)
-  sellAccountId: String (AccountId)
-  buyAccountId: String? (AccountId)
+  source: String
+  swapperName: String
+  sellAccountId: String (hashed)
+  buyAccountId: String? (hashed)
+  receiveAddress: String?
   sellTxHash: String?
   buyTxHash: String?
+  txLink: String?
+  statusMessage: String?
+  isStreaming: Boolean
+  estimatedCompletion: DateTime?
+  createdAt: DateTime
+  updatedAt: DateTime
   metadata: String (JSON)
+  chainflipSwapId: Int?
+  relayTransactionMetadata: String?
+  relayerExplorerTxLink: String?
+  relayerTxHash: String?
+  stepIndex: Int
+  streamingSwapMetadata: String?
   userId: String (foreign key)
+  notifications: Notification[]
 }
 ```
 
@@ -150,10 +181,7 @@ Notification {
 
 ### Notifications
 - `POST /notifications/register-device` - Register device for push notifications
-- `POST /notifications/unregister-device` - Unregister device
-- `GET /notifications/user/:userId` - Get user notifications
-- `PUT /notifications/:notificationId/read` - Mark notification as read
-- `POST /notifications/test` - Send test notification
+- `GET /notifications/devices/:userId` - Get user devices
 
 ### Swaps
 - `POST /swaps` - Create new swap
@@ -161,17 +189,12 @@ Notification {
 - `GET /swaps/user/:userId` - Get user swaps
 - `GET /swaps/account/:accountId` - Get swaps by account ID
 - `GET /swaps/pending` - Get pending swaps
-- `POST /swaps/:swapId/poll` - Manually poll swap status
 - `GET /swaps/:swapId` - Get specific swap
 
 ## 🔌 WebSocket Events
 
 ### Client to Server
-- `authenticate` - Authenticate user
-- `registerDevice` - Register device via WebSocket
-- `unregisterDevice` - Unregister device
 - `getNotifications` - Get user notifications
-- `markNotificationRead` - Mark notification as read
 - `getSwaps` - Get user swaps
 
 ### Server to Client
@@ -182,11 +205,6 @@ Notification {
 
 ### Automated Polling
 - **Every 30 seconds**: Poll pending swaps for status updates
-- **Every minute**: Poll swaps by account ID
-- **Daily at midnight**: Clean up old completed swaps
-
-### Manual Polling
-- `POST /swaps/:swapId/poll` - Manually trigger status check
 
 ## 📱 Push Notifications
 
@@ -201,28 +219,56 @@ Notification {
 - `SWAP_COMPLETED` - Successful swap completion
 - `SWAP_FAILED` - Failed swap notifications
 
+## 🔐 Security Features
+
+### Account ID Hashing
+- All account IDs are hashed using SHA-256 with a salt
+- Salt is configurable via `ACCOUNT_ID_SALT` environment variable
+- Consistent hashing across user creation and swap operations
+
+### Type Safety
+- All `any` types have been replaced with proper TypeScript types
+- Comprehensive type definitions for all services and controllers
+- Proper error handling with custom error classes
+
+## 🏛️ Architecture Improvements
+
+### Dependency Injection
+- Replaced singleton pattern with proper NestJS services
+- Modular chain adapter initialization:
+  - `EvmChainAdapterService` - Handles all EVM chains
+  - `UtxoChainAdapterService` - Handles UTXO chains
+  - `CosmosSdkChainAdapterService` - Handles Cosmos SDK chains
+  - `SolanaChainAdapterService` - Handles Solana
+- `ChainAdapterManagerService` - Centralized adapter management
+
+### Service Structure
+- Each chain type has its own service for better maintainability
+- Proper separation of concerns
+- Improved testability and modularity
+
 ## 🔍 Query Examples
 
-### Find User by Account ID
+### Find User by Hashed Account ID
 ```typescript
 const user = await prisma.user.findFirst({
   where: {
     userAccounts: {
       some: {
-        accountId: "hashed-account-id"
+        accountId: hashedAccountId
       }
     }
   }
 });
 ```
 
-### Get Swaps for Account
+### Get Swaps for Hashed Account ID
 ```typescript
 const swaps = await prisma.swap.findMany({
   where: {
     OR: [
-      { sellAccountId: "account-id" },
-      { buyAccountId: "account-id" }
+      { sellAccountId: hashedAccountId },
+      { buyAccountId: hashedAccountId }
     ]
   }
 });
@@ -248,33 +294,38 @@ const user = await prisma.user.findUnique({
 
 ### Manual Testing
 1. Start the server: `npm run start:dev`
-2. Run test script: `node test-poc.js`
-3. Monitor logs for successful operations
+2. Monitor logs for successful operations
 
 ### WebSocket Testing
 ```javascript
 const socket = io('http://localhost:3000');
 
 socket.on('connect', () => {
-  socket.emit('authenticate', { userId: 'test-user' });
+  // Get notifications
+  socket.emit('getNotifications', { limit: 10 });
+  
+  // Get swaps
+  socket.emit('getSwaps', { limit: 10 });
 });
 
 socket.on('notification', (notification) => {
   console.log('Received notification:', notification);
+});
+
+socket.on('swapUpdate', (swap) => {
+  console.log('Swap updated:', swap);
 });
 ```
 
 ## 🔧 Configuration
 
 ### Environment Variables
-- `DATABASE_URL` - SQLite database path
+- `DATABASE_URL` - SQLite database path (`file:./dev.db`)
 - `EXPO_ACCESS_TOKEN` - Expo push service access token
-- `SHAPESHIFT_API_KEY` - ShapeShift API key (for production)
+- `ACCOUNT_ID_SALT` - Salt for hashing account IDs
 
 ### Polling Intervals
 - Pending swaps: 30 seconds
-- Account-based polling: 1 minute
-- Cleanup: Daily at midnight
 
 ## 🚀 Production Considerations
 
@@ -287,6 +338,7 @@ socket.on('notification', (notification) => {
 - Add JWT authentication
 - Implement rate limiting
 - Add input validation and sanitization
+- Use strong, unique salt for account ID hashing
 
 ### Scalability
 - Add Redis for caching
