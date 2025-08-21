@@ -1,0 +1,77 @@
+import { Controller, Post, Get, Put, Param, Body, Query } from '@nestjs/common';
+import { SwapsService, UpdateSwapStatusDto } from './swaps.service';
+import type { CreateSwapDto } from './swaps.service';
+import { SwapPollingService } from '../polling/swap-polling.service';
+import { Asset } from '@shapeshiftoss/types';
+
+@Controller('swaps')
+export class SwapsController {
+  constructor(
+    private swapsService: SwapsService,
+    private swapPollingService: SwapPollingService,
+  ) {}
+
+  @Post()
+  async createSwap(@Body() data: CreateSwapDto) {
+    return this.swapsService.createSwap(data);
+  }
+
+  @Put(':swapId/status')
+  async updateSwapStatus(
+    @Param('swapId') swapId: string,
+    @Body() data: Omit<UpdateSwapStatusDto, 'swapId'>,
+  ) {
+    return this.swapsService.updateSwapStatus({
+      swapId,
+      ...data,
+    });
+  }
+
+  @Get('user/:userId')
+  async getSwapsByUser(
+    @Param('userId') userId: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.swapsService.getSwapsByUser(
+      userId,
+      limit ? parseInt(limit) : 50,
+    );
+  }
+
+  @Get('account/:accountId')
+  async getSwapsByAccountId(@Param('accountId') accountId: string) {
+    return this.swapsService.getSwapsByAccountId(accountId);
+  }
+
+  @Get('pending')
+  async getPendingSwaps() {
+    return this.swapsService.getPendingSwaps();
+  }
+
+  @Get(':swapId')
+  async getSwap(@Param('swapId') swapId: string) {
+    const swap = await this.swapsService['prisma'].swap.findUnique({
+      where: { swapId },
+      include: {
+        user: {
+          include: {
+            devices: true,
+          },
+        },
+        notifications: {
+          orderBy: { sentAt: 'desc' },
+        },
+      },
+    });
+
+    if (!swap) {
+      return null;
+    }
+
+    return {
+      ...swap,
+      sellAsset: JSON.parse(swap.sellAsset) as Asset,
+      buyAsset: JSON.parse(swap.buyAsset) as Asset,
+    };
+  }
+}
