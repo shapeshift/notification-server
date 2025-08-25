@@ -1,25 +1,28 @@
 {
   "name": "shapeshift-backend",
   "version": "0.0.1",
-  "description": "",
+  "description": "ShapeShift Backend Services",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:reset": "npx prisma migrate reset --force && npx prisma generate",
-    "db:clear": "npx prisma db push --force-reset && npx prisma generate"
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "start": "turbo run start",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,js,json,md}\"",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "db:generate": "turbo run db:generate",
+    "db:migrate": "turbo run db:migrate",
+    "db:push": "turbo run db:push",
+    "clean": "turbo run clean && rm -rf node_modules"
   },
   "dependencies": {
     "@arbitrum/sdk": "^4.0.4",
@@ -38,7 +41,7 @@
     "@nestjs/platform-socket.io": "^11.1.6",
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/websockets": "^11.1.6",
-    "@prisma/client": "^6.13.0",
+    "@prisma/client": "^6.14.0",
     "@shapeshiftoss/caip": "8.19.0",
     "@shapeshiftoss/chain-adapters": "11.6.0",
     "@shapeshiftoss/common-api": "^9.3.0",
@@ -132,5 +135,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.0"
   }
 }
