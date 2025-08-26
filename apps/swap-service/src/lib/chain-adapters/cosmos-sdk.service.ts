@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ChainAdapterManagerService } from '../chain-adapter-manager.service';
 import * as unchained from '@shapeshiftoss/unchained-client';
-import { cosmos } from '@shapeshiftoss/chain-adapters';
+import { cosmos, thorchain, mayachain } from '@shapeshiftoss/chain-adapters';
 import { 
   cosmosChainId,
   thorchainChainId,
@@ -47,8 +47,8 @@ export class CosmosSdkChainAdapterService {
 
     const cosmosAdapter = new cosmos.ChainAdapter({
       providers: { http: cosmosHttp, ws: cosmosWs },
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      midgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
+      coinName: 'Cosmos',
     });
 
     chainAdapterManager.set(cosmosChainId, cosmosAdapter);
@@ -56,20 +56,28 @@ export class CosmosSdkChainAdapterService {
   }
 
   private async initializeThorchainAdapter(chainAdapterManager: Map<string, any>) {
-    const thorchainHttp = new unchained.cosmos.V1Api(
-      new unchained.cosmos.Configuration({
-        basePath: process.env.VITE_UNCHAINED_THORCHAIN_HTTP_URL || 'https://api.shapeshift.com',
+    const http = new unchained.thorchain.V1Api(
+      new unchained.thorchain.Configuration({
+        basePath:  process.env.VITE_UNCHAINED_THORCHAIN_HTTP_URL,
       }),
-    );
+    )
 
-    const thorchainWs = new unchained.ws.Client<unchained.cosmos.Tx>(
-      process.env.VITE_UNCHAINED_THORCHAIN_WS_URL || 'wss://api.shapeshift.com',
-    );
+    const httpV1 = new unchained.thorchainV1.V1Api(
+      new unchained.thorchainV1.Configuration({
+        basePath: process.env.VITE_UNCHAINED_THORCHAIN_V1_HTTP_URL,
+      }),
+    )
 
-    const thorchainAdapter = new cosmos.ChainAdapter({
-      providers: { http: thorchainHttp, ws: thorchainWs },
+    const ws = new unchained.ws.Client<unchained.cosmossdk.Tx>(
+      process.env.VITE_UNCHAINED_THORCHAIN_WS_URL,
+    )
+
+    const thorchainAdapter = new thorchain.ChainAdapter({
+      providers: { http, ws },
       thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
       mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      coinName: 'THOR',
+      httpV1,
     });
 
     chainAdapterManager.set(thorchainChainId, thorchainAdapter);
@@ -77,8 +85,8 @@ export class CosmosSdkChainAdapterService {
   }
 
   private async initializeMayachainAdapter(chainAdapterManager: Map<string, any>) {
-    const mayachainHttp = new unchained.cosmos.V1Api(
-      new unchained.cosmos.Configuration({
+    const mayachainHttp = new unchained.mayachain.V1Api(
+      new unchained.mayachain.Configuration({
         basePath: process.env.VITE_UNCHAINED_MAYACHAIN_HTTP_URL || 'https://api.shapeshift.com',
       }),
     );
@@ -87,10 +95,10 @@ export class CosmosSdkChainAdapterService {
       process.env.VITE_UNCHAINED_MAYACHAIN_WS_URL || 'wss://api.shapeshift.com',
     );
 
-    const mayachainAdapter = new cosmos.ChainAdapter({
+    const mayachainAdapter = new mayachain.ChainAdapter({
       providers: { http: mayachainHttp, ws: mayachainWs },
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      midgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      coinName: 'MAYA',
     });
 
     chainAdapterManager.set(mayachainChainId, mayachainAdapter);

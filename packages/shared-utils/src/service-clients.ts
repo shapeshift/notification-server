@@ -8,7 +8,7 @@ export class UserServiceClient {
   }
 
   async getUserById(userId: string) {
-    const response = await fetch(`${this.baseUrl}/api/v1/users/${userId}`);
+    const response = await fetch(`${this.baseUrl}/users/${userId}`);
     if (!response.ok) {
       throw new Error(`Failed to get user: ${response.statusText}`);
     }
@@ -16,7 +16,7 @@ export class UserServiceClient {
   }
 
   async getUserByAccountId(accountId: string) {
-    const response = await fetch(`${this.baseUrl}/api/v1/users/account/${accountId}`);
+    const response = await fetch(`${this.baseUrl}/users/account/${accountId}`);
     if (!response.ok) {
       throw new Error(`Failed to get user by account ID: ${response.statusText}`);
     }
@@ -24,7 +24,7 @@ export class UserServiceClient {
   }
 
   async getOrCreateUserByAccountIds(accountIds: string[]) {
-    const response = await fetch(`${this.baseUrl}/api/v1/users/get-or-create`, {
+    const response = await fetch(`${this.baseUrl}/users/get-or-create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export class UserServiceClient {
   }
 
   async getUserDevices(userId: string) {
-    const response = await fetch(`${this.baseUrl}/api/v1/users/${userId}/devices`);
+    const response = await fetch(`${this.baseUrl}/users/${userId}/devices`);
     if (!response.ok) {
       throw new Error(`Failed to get user devices: ${response.statusText}`);
     }
@@ -61,7 +61,7 @@ export class NotificationsServiceClient {
     swapId?: string;
     deviceId?: string;
   }) {
-    const response = await fetch(`${this.baseUrl}/api/v1/notifications`, {
+    const response = await fetch(`${this.baseUrl}/notifications`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export class NotificationsServiceClient {
     body: string;
     data?: any;
   }) {
-    const response = await fetch(`${this.baseUrl}/api/v1/notifications/send-to-user`, {
+    const response = await fetch(`${this.baseUrl}/notifications/send-to-user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

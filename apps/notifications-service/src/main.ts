@@ -10,9 +10,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Global prefix
-  app.setGlobalPrefix('api/v1');
-
   const port = process.env.PORT || 3003;
   await app.listen(port);
   

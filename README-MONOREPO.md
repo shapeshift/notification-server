@@ -24,13 +24,13 @@ shapeshift-backend/
 - **Port**: 3001
 - **Purpose**: Manages user accounts, devices, and authentication
 - **Database**: SQLite (development) / PostgreSQL (production)
-- **API**: `/api/v1/users/*`
+- **API**: `/users/*`
 
 ### Swap Service (`apps/swap-service`)
 - **Port**: 3002
 - **Purpose**: Handles swaps and WebSocket connections
 - **Database**: SQLite (development) / PostgreSQL (production)
-- **API**: `/api/v1/swaps/*`
+- **API**: `/swaps/*`
 - **WebSocket**: Real-time updates
 - **Dependencies**: User Service, Notifications Service
 
@@ -38,7 +38,7 @@ shapeshift-backend/
 - **Port**: 3003
 - **Purpose**: Manages notifications and push notifications
 - **Database**: SQLite (development) / PostgreSQL (production)
-- **API**: `/api/v1/notifications/*`
+- **API**: `/notifications/*`
 - **WebSocket**: Real-time notifications
 - **Dependencies**: User Service
 
@@ -132,36 +132,36 @@ docker-compose logs -f
 ### User Service Endpoints
 
 ```
-POST   /api/v1/users                    # Create user
-GET    /api/v1/users                    # Get all users
-GET    /api/v1/users/:userId            # Get user by ID
-POST   /api/v1/users/get-or-create      # Get or create user
-GET    /api/v1/users/account/:accountId # Get user by account ID
-POST   /api/v1/users/:userId/account-id # Add account ID
-POST   /api/v1/users/:userId/devices    # Register device
-GET    /api/v1/users/:userId/devices    # Get user devices
+POST   /users                    # Create user
+GET    /users                    # Get all users
+GET    /users/:userId            # Get user by ID
+POST   /users/get-or-create      # Get or create user
+GET    /users/account/:accountId # Get user by account ID
+POST   /users/:userId/account-id # Add account ID
+POST   /users/:userId/devices    # Register device
+GET    /users/:userId/devices    # Get user devices
 ```
 
 ### Swap Service Endpoints
 
 ```
-POST   /api/v1/swaps                    # Create swap
-GET    /api/v1/swaps                    # Get all swaps
-GET    /api/v1/swaps/:swapId            # Get swap by ID
-GET    /api/v1/swaps/user/:userId       # Get swaps by user
-PUT    /api/v1/swaps/:swapId            # Update swap
+POST   /swaps                    # Create swap
+GET    /swaps                    # Get all swaps
+GET    /swaps/:swapId            # Get swap by ID
+GET    /swaps/user/:userId       # Get swaps by user
+PUT    /swaps/:swapId            # Update swap
 ```
 
 ### Notifications Service Endpoints
 
 ```
-POST   /api/v1/notifications            # Create notification
-POST   /api/v1/notifications/register-device # Register device
-GET    /api/v1/notifications/user/:userId    # Get user notifications
-PUT    /api/v1/notifications/:id/read   # Mark notification as read
-GET    /api/v1/notifications/devices/:userId # Get user devices
-POST   /api/v1/notifications/send-to-user    # Send notification to user
-POST   /api/v1/notifications/send-to-device  # Send notification to device
+POST   /notifications            # Create notification
+POST   /notifications/register-device # Register device
+GET    /notifications/user/:userId    # Get user notifications
+PUT    /notifications/:id/read   # Mark notification as read
+GET    /notifications/devices/:userId # Get user devices
+POST   /notifications/send-to-user    # Send notification to user
+POST   /notifications/send-to-device  # Send notification to device
 ```
 
 ## Environment Variables
@@ -177,15 +177,15 @@ ACCOUNT_ID_SALT=your-salt-here
 ```env
 PORT=3002
 DATABASE_URL=file:./swap-service.db
-USER_SERVICE_URL=http://localhost:3001
-NOTIFICATIONS_SERVICE_URL=http://localhost:3003
+USER_SERVICE_URL=http:/localhost:3001
+NOTIFICATIONS_SERVICE_URL=http:/localhost:3003
 ```
 
 ### Notifications Service
 ```env
 PORT=3003
 DATABASE_URL=file:./notifications-service.db
-USER_SERVICE_URL=http://localhost:3001
+USER_SERVICE_URL=http:/localhost:3001
 EXPO_ACCESS_TOKEN=your-expo-token
 ```
 
@@ -223,10 +223,10 @@ import { UserServiceClient, NotificationsServiceClient } from '@shapeshift/share
 const userClient = new UserServiceClient();
 const notificationsClient = new NotificationsServiceClient();
 
-// Get user from user service
+/ Get user from user service
 const user = await userClient.getUserById(userId);
 
-// Send notification
+/ Send notification
 await notificationsClient.createNotification({
   userId,
   title: 'Swap Completed',

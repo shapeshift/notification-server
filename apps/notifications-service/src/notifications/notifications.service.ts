@@ -14,7 +14,7 @@ export class NotificationsService {
   private expo: Expo;
 
   constructor(private prisma: PrismaService) {
-    this.expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+    this.expo = new Expo({ accessToken: getRequiredEnvVar('EXPO_ACCESS_TOKEN') });
   }
 
   async createNotification(data: CreateNotificationDto): Promise<Notification> {
@@ -44,7 +44,7 @@ export class NotificationsService {
     try {
       // Get user devices from user service
       const userServiceUrl = getRequiredEnvVar('USER_SERVICE_URL');
-      const response = await fetch(`${userServiceUrl}/api/v1/users/${notification.userId}/devices`);
+      const response = await fetch(`${userServiceUrl}/users/${notification.userId}/devices`);
       
       if (!response.ok) {
         this.logger.error(`Failed to fetch user devices: ${response.statusText}`);
@@ -120,7 +120,7 @@ export class NotificationsService {
     try {
       // Get user devices from user service
       const userServiceUrl = getRequiredEnvVar('USER_SERVICE_URL');
-      const response = await fetch(`${userServiceUrl}/api/v1/users/${userId}/devices`);
+      const response = await fetch(`${userServiceUrl}/users/${userId}/devices`);
       
       if (!response.ok) {
         this.logger.error(`Failed to fetch user devices: ${response.statusText}`);
@@ -195,7 +195,7 @@ export class NotificationsService {
 
       // Register device with user service
       const userServiceUrl = getRequiredEnvVar('USER_SERVICE_URL');
-      const response = await fetch(`${userServiceUrl}/api/v1/users/${userId}/devices`, {
+      const response = await fetch(`${userServiceUrl}/users/${userId}/devices`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -237,7 +237,7 @@ export class NotificationsService {
   async getUserDevices(userId: string) {
     try {
       const userServiceUrl = getRequiredEnvVar('USER_SERVICE_URL');
-      const response = await fetch(`${userServiceUrl}/api/v1/users/${userId}/devices`);
+      const response = await fetch(`${userServiceUrl}/users/${userId}/devices`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch user devices: ${response.statusText}`);

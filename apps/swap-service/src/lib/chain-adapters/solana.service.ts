@@ -3,9 +3,7 @@ import { ChainAdapterManagerService } from '../chain-adapter-manager.service';
 import * as unchained from '@shapeshiftoss/unchained-client';
 import { solana } from '@shapeshiftoss/chain-adapters';
 import { solanaChainId } from '@shapeshiftoss/caip';
-import { solanaChainIds, type SolanaChainAdapter } from '@shapeshiftoss/chain-adapters';
 import type { ChainId } from '@shapeshiftoss/caip';
-import { SolanaChainId } from '@shapeshiftoss/types';
 
 @Injectable()
 export class SolanaChainAdapterService {
@@ -47,11 +45,7 @@ export class SolanaChainAdapterService {
     this.logger.log('Solana adapter initialized');
   }
 
-  assertGetSolanaChainAdapter(chainId: ChainId): SolanaChainAdapter {
-    if (!solanaChainIds.includes(chainId as SolanaChainId)) {
-      throw new Error(`Chain ${chainId} is not a Solana chain`);
-    }
-
+  assertGetSolanaChainAdapter(chainId: ChainId): solana.ChainAdapter {
     const chainAdapterManager = this.chainAdapterManagerService.getChainAdapterManager();
     const adapter = chainAdapterManager.get(chainId);
 
@@ -59,6 +53,6 @@ export class SolanaChainAdapterService {
       throw new Error(`Solana chain adapter not found for chain ${chainId}`);
     }
 
-    return adapter as SolanaChainAdapter;
+    return adapter as solana.ChainAdapter;
   }
 }
