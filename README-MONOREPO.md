@@ -176,7 +176,7 @@ ACCOUNT_ID_SALT=your-salt-here
 ### Swap Service
 ```env
 PORT=3002
-DATABASE_URL=file:./swap-service.db
+DATABASE_URL=file:./dev.db
 USER_SERVICE_URL=http:/localhost:3001
 NOTIFICATIONS_SERVICE_URL=http:/localhost:3003
 ```

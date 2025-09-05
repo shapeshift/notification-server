@@ -25,7 +25,7 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3001
-      - DATABASE_URL=file:./swap-service.db
+      - DATABASE_URL=file:./dev.db
       - USER_SERVICE_URL=http://user-service:3002
       - NOTIFICATIONS_SERVICE_URL=http://notifications-service:3003
     volumes:
