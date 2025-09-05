@@ -147,6 +147,7 @@
     "node": ">=18.0.0",
     "yarn": ">=1.22.0"
   },
+  "packageManager": "yarn@4.7.0",
   "resolutions": {
     "@shapeshiftoss/unchained-client": "10.14.4",
     "p-queue": "6.6.2",

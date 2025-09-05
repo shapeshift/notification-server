@@ -3716,7 +3716,7 @@ __metadata:
 "@shapeshiftoss/caip@npm:8.16.2, @shapeshiftoss/caip@npm:^8.16.2":
   version: 8.16.2
   resolution: "@shapeshiftoss/caip@npm:8.16.2"
-  checksum: 10/5c4a32a0ff4cf9c6a6fa97a52d9a4d7b7a01068eb9395250d4b5da48cc53bd6856126f1f7b3bda591e94af8aa543e8a1bc4c49918c7933788366128ec6d8e2ab
+  checksum: 10/b4e6db693640fb1ccf30ec66b750b9f32bdab26328e6859d410071dc0861e6afb255c0296aaab40327f020befe1ae1c121322a97039983a9d79c5bf3aff22c0a
   languageName: node
   linkType: hard
 
@@ -3743,7 +3743,7 @@ __metadata:
     coinselect: "npm:^3.1.13"
     multicoin-address-validator: "npm:^0.5.12"
     p-queue: "npm:^8.0.1"
-  checksum: 10/d4dd0d9070ca9e3e71c10287f4e522b1169da1765b2f93f8c4639db9eb984da1621e49d25c55a0982abfa1afd85db5bc78567e048a6423a75bd7bdd313926506
+  checksum: 10/dc074540e5ffa04bd56a7343dc7d2efc3f3954d468d2fcb902e36661a029c4ad2e37d9bc6955e6df049d22790ad8cef03c2541a965b305bb38d45303e20c2752
   languageName: node
   linkType: hard
 
@@ -3767,7 +3767,7 @@ __metadata:
     "@shapeshiftoss/caip": "npm:^8.16.2"
     "@shapeshiftoss/types": "npm:^8.6.2"
     "@shapeshiftoss/utils": "npm:^1.0.1"
-  checksum: 10/b03d30b3a1675f3dfdfc96eee82ae044e809571e22657806767c59e08fe580d1992ad85951a35332cf84e01adf14790aec55f21ca19aecd51a9e442019397c82
+  checksum: 10/7c4e65ae5c7a83e631469b10261af3f04ca682dbbc792020137d7b54add2f0d519ac85a1e613d02bbfdc6397a6ee042e699f2812e2be955e3dceb4435c7d727c
   languageName: node
   linkType: hard
 
@@ -3777,7 +3777,7 @@ __metadata:
   dependencies:
     lodash.clonedeep: "npm:^4.5.0"
     lodash.snakecase: "npm:^4.1.1"
-  checksum: 10/7a027013fd384fd451b3c0681609fb20bc31e76b0ac82db2d30cc9dc7af4f0891cf289d28aac65c0e9f5a28789b840e9308eeae19b350520a3dc3c835f5503c1
+  checksum: 10/98c7ba9edc88acc5524bd646cdfe5a587371526d789939f098991c0829776b8734f43720642a4f1f0951da653ee85c4e8e571e17651b6090d1f7bd6561ba4774
   languageName: node
   linkType: hard
 
@@ -3884,7 +3884,7 @@ __metadata:
     "@shapeshiftoss/chain-adapters": "npm:^11.3.3"
     "@shapeshiftoss/types": "npm:^8.6.2"
     "@shapeshiftoss/utils": "npm:^1.0.1"
-  checksum: 10/646a872bc1ca9a4c61b2040386e9ae036887f9041dc8f1c4d982aeabb6d081d7f4c98eb3d1790a6ed3617728b55ffd6f5bb87b887329d156e396fc8fd56d3285
+  checksum: 10/1116df2b2320dd9af3f2b372baa4c6075d37b3a76d043bb20be5ccc7c68b2a67024bc2213fecc80af9a5f25e0417ebc8da0edf0675e1bc9672a3607792ebbfcb
   languageName: node
   linkType: hard
 
@@ -3901,7 +3901,7 @@ __metadata:
 "@shapeshiftoss/types@npm:8.6.2, @shapeshiftoss/types@npm:^8.6.2":
   version: 8.6.2
   resolution: "@shapeshiftoss/types@npm:8.6.2"
-  checksum: 10/d31f21248d1b98402432df4fd2a56bd7138d20bc3383e8d5c34b7a588aedd2323135a739d5704cc31491061ea6d1bd4219ef523b6a7deb3b1e9b193d1caebd82
+  checksum: 10/f642f8bba7fd0575904dd01666428e49b21d68299cd4d25b053c79fada669eb73b1a7a29da912463c171a088dcdfe9d0f119059ed878582a61b1ecd81ab64b07
   languageName: node
   linkType: hard
 
@@ -3923,7 +3923,7 @@ __metadata:
     "@solana/web3.js": "npm:^1.98.0"
     isomorphic-ws: "npm:^4.0.1"
     ws: "npm:^8.17.1"
-  checksum: 10/42dd075e1303ae5edb095eca66c93d0d5cf7c365807615857afc71e614864d21db8bbd33a1bf99cdc06a2eb05d6e35344bc598c8312ae900a42b11c322610e5d
+  checksum: 10/7bcdfbbb0814609484f5b18d5f00e04552595bac663f8b9309c8b1ce589fbd82fc8d289b6f38769a58c8155a2098b7a96ed18800d8f5f3c8ef478a0d1a663c1f
   languageName: node
   linkType: hard
 
@@ -3948,7 +3948,7 @@ __metadata:
   dependencies:
     "@shapeshiftoss/caip": "npm:^8.16.2"
     "@shapeshiftoss/types": "npm:^8.6.2"
-  checksum: 10/f80f11481c6205c6e4888d5898344ee189258bf901b1ef55719323bbc2fe2d044f75440883aaf249c210e8807a19bc5145b2cf36747056f958e8ac505cd4fbcf
+  checksum: 10/80e60248e1156c5c02b83341438d943cc879f6969a05cc1042be250e3a8e300f629f88e471b6ae50fffc82bf01481d96426134cbe3426f1744345297e3506889
   languageName: node
   linkType: hard
 
