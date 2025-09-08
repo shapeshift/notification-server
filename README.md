@@ -1,98 +1,275 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ShapeShift Backend Monorepo
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is a Turborepo monorepo containing the ShapeShift backend microservices.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Architecture
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ yarn install
+```
+shapeshift-backend/
+├── apps/
+│   ├── user-service/          # User accounts microservice
+│   ├── swap-service/          # Swap microservice
+│   └── notifications-service/ # Notifications microservice
+├── packages/
+│   ├── shared-types/          # Shared TypeScript types
+│   └── shared-utils/          # Shared utilities
+├── turbo.json                 # Turborepo configuration
+├── package.json               # Root package.json
+└── docker-compose.yml         # Docker Compose for development
 ```
 
-## Compile and run the project
+## Services
 
-```bash
-# development
-$ yarn run start
+### User Service (`apps/user-service`)
+- **Port**: 3002
+- **Purpose**: Manages user accounts, devices, and authentication
+- **Database**: SQLite (development) / PostgreSQL (production)
+- **API**: `/users/*`
 
-# watch mode
-$ yarn run start:dev
+### Swap Service (`apps/swap-service`)
+- **Port**: 3001
+- **Purpose**: Handles swaps and WebSocket connections
+- **Database**: SQLite (development) / PostgreSQL (production)
+- **API**: `/swaps/*`
+- **WebSocket**: Real-time updates
+- **Dependencies**: User Service, Notifications Service
 
-# production mode
-$ yarn run start:prod
+### Notifications Service (`apps/notifications-service`)
+- **Port**: 3003
+- **Purpose**: Manages notifications and push notifications
+- **Database**: SQLite (development) / PostgreSQL (production)
+- **API**: `/notifications/*`
+- **WebSocket**: Real-time notifications
+- **Dependencies**: User Service
+
+## Service Communication
+
+```
+┌─────────────────┐    HTTP    ┌─────────────────┐
+│   User Service  │◄──────────►│  Swap Service   │
+│   (Port 3002)   │            │  (Port 3001)    │
+└─────────────────┘            └─────────────────┘
+         ▲                              ▲
+         │ HTTP                         │ HTTP
+         ▼                              ▼
+┌─────────────────┐            ┌─────────────────┐
+│ Notifications   │            │ Notifications   │
+│ Service         │            │ Service         │
+│ (Port 3003)     │            │ (Port 3003)     │
+└─────────────────┘            └─────────────────┘
 ```
 
-## Run tests
+## Getting Started
 
+### Prerequisites
+- Node.js 22+
+- Yarn 4+
+- Docker (optional, for containerized development)
+
+### Installation
+
+1. **Copy the environment variables**
+  Copy `.env.example` into `.env` at the root of the repository
+  Ask the team for the EXPO token used to launch notifications
+
+1. **Install dependencies**:
+   ```bash
+   yarn install
+   ```
+
+2. **Build shared packages**:
+   ```bash
+   yarn build
+   ```
+
+3. **Set up databases**:
+   ```bash
+   # Generate Prisma clients
+   yarn db:generate
+
+   # Push db structure
+   yarn db:push
+   
+   # Run migrations
+   yarn db:migrate
+   ```
+
+### Development
+
+#### Option 1: Local Development
 ```bash
-# unit tests
-$ yarn run test
+# Start all services in development mode
+yarn start:dev
 
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+# Or start individual services
+yarn workspace @shapeshift/user-service start:dev
+yarn workspace @shapeshift/swap-service start:dev
+yarn workspace @shapeshift/notifications-service start:dev
 ```
+
+#### Option 2: Docker Development
+```bash
+# Start all services with Docker
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+```
+
+### Available Scripts
+
+#### Root Level
+- `yarn build` - Build all packages and apps
+- `yarn dev` - Start all services in development mode
+- `yarn test` - Run tests for all packages
+- `yarn lint` - Lint all packages
+- `yarn db:generate` - Generate Prisma clients
+- `yarn db:push` - Push default database structure
+- `yarn db:migrate` - Run database migrations
+- `yarn clean` - Clean all builds and node_modules
+
+#### Individual Services
+- `yarn workspace @shapeshift/user-service dev` - Start user service
+- `yarn workspace @shapeshift/swap-service dev` - Start swap service
+- `yarn workspace @shapeshift/notifications-service dev` - Start notifications service
+- `yarn workspace @shapeshift/shared-types build` - Build shared types
+- `yarn workspace @shapeshift/shared-utils build` - Build shared utils
+
+## API Documentation
+
+### User Service Endpoints
+
+```
+POST   /users                    # Create user
+GET    /users                    # Get all users
+GET    /users/:userId            # Get user by ID
+POST   /users/get-or-create      # Get or create user
+GET    /users/account/:accountId # Get user by account ID
+POST   /users/:userId/account-id # Add account ID
+POST   /users/:userId/devices    # Register device
+GET    /users/:userId/devices    # Get user devices
+```
+
+### Swap Service Endpoints
+
+```
+POST   /swaps                    # Create swap
+GET    /swaps                    # Get all swaps
+GET    /swaps/:swapId            # Get swap by ID
+GET    /swaps/user/:userId       # Get swaps by user
+PUT    /swaps/:swapId            # Update swap
+```
+
+### Notifications Service Endpoints
+
+```
+POST   /notifications            # Create notification
+POST   /notifications/register-device # Register device
+GET    /notifications/user/:userId    # Get user notifications
+PUT    /notifications/:id/read   # Mark notification as read
+GET    /notifications/devices/:userId # Get user devices
+POST   /notifications/send-to-user    # Send notification to user
+POST   /notifications/send-to-device  # Send notification to device
+```
+
+## Environment Variables
+
+### Swap Service
+```env
+PORT=3001
+DATABASE_URL=file:./dev.db
+USER_SERVICE_URL=http:/localhost:3001
+NOTIFICATIONS_SERVICE_URL=http:/localhost:3003
+```
+
+### User Service
+```env
+PORT=3002
+DATABASE_URL=file:./user-service.db
+ACCOUNT_ID_SALT=your-salt-here
+```
+
+### Notifications Service
+```env
+PORT=3003
+DATABASE_URL=file:./notifications-service.db
+USER_SERVICE_URL=http:/localhost:3001
+EXPO_ACCESS_TOKEN=your-expo-token
+```
+
+## Database Setup
+
+### Production (PostgreSQL)
+Update the `DATABASE_URL` in each service's environment to point to your PostgreSQL instance.
+
+## Service Communication
+
+### HTTP Communication
+Services communicate via HTTP APIs using the service clients in `@shapeshift/shared-utils`:
+
+```typescript
+import { UserServiceClient, NotificationsServiceClient } from '@shapeshift/shared-utils';
+
+const userClient = new UserServiceClient();
+const notificationsClient = new NotificationsServiceClient();
+
+/ Get user from user service
+const user = await userClient.getUserById(userId);
+
+/ Send notification
+await notificationsClient.createNotification({
+  userId,
+  title: 'Swap Completed',
+  body: 'Your swap has been completed successfully',
+  type: 'SWAP_COMPLETED',
+  swapId: swapId
+});
+```
+
+### WebSocket Communication
+- **Swap Service**: Handles swap-related WebSocket connections
+- **Notifications Service**: Handles notification-related WebSocket connections
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### Docker Deployment
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+# Build production images
+docker-compose -f docker-compose.prod.yml build
+
+# Deploy
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Individual Service Deployment
+Each service can be deployed independently as they are separate NestJS applications.
 
-## Resources
+## Contributing
 
-Check out a few resources that may come in handy when working with NestJS:
+1. Create a feature branch
+2. Make your changes
+3. Run tests: `yarn test`
+4. Run linting: `yarn lint`
+5. Submit a pull request
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Troubleshooting
 
-## Support
+### Common Issues
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. **Port conflicts**: Make sure ports 3001, 3002, and 3003 are available
+2. **Database issues**: Run `yarn db:generate` and `yarn db:migrate`
+3. **Build issues**: Clean and rebuild: `yarn clean && yarn build`
+4. **Service communication**: Check environment variables for service URLs
 
-## Stay in touch
+### Logs
+```bash
+# View service logs
+yarn workspace @shapeshift/user-service logs
+yarn workspace @shapeshift/swap-service logs
+yarn workspace @shapeshift/notifications-service logs
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Docker logs
+docker-compose logs -f user-service
+docker-compose logs -f swap-service
+docker-compose logs -f notifications-service
+```

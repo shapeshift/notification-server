@@ -18,6 +18,10 @@
       "cache": false,
       "persistent": true
     },
+    "start:dev": {
+      "cache": false,
+      "persistent": true
+    },
     "test": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"]
