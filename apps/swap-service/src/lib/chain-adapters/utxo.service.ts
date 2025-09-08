@@ -39,19 +39,19 @@ export class UtxoChainAdapterService {
   private async initializeBitcoinAdapter(chainAdapterManager: Map<string, any>) {
     const bitcoinHttp = new unchained.bitcoin.V1Api(
       new unchained.bitcoin.Configuration({
-        basePath: process.env.VITE_UNCHAINED_BITCOIN_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_BITCOIN_HTTP_URL,
       }),
     );
 
     const bitcoinWs = new unchained.ws.Client<unchained.bitcoin.Tx>(
-      process.env.VITE_UNCHAINED_BITCOIN_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_BITCOIN_WS_URL,
     );
 
     const bitcoinAdapter = new bitcoin.ChainAdapter({
       providers: { http: bitcoinHttp, ws: bitcoinWs },
       coinName: 'Bitcoin',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(btcChainId, bitcoinAdapter);
@@ -61,19 +61,19 @@ export class UtxoChainAdapterService {
   private async initializeBitcoinCashAdapter(chainAdapterManager: Map<string, any>) {
     const bchHttp = new unchained.bitcoin.V1Api(
       new unchained.bitcoin.Configuration({
-        basePath: process.env.VITE_UNCHAINED_BITCOINCASH_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_BITCOINCASH_HTTP_URL,
       }),
     );
 
     const bchWs = new unchained.ws.Client<unchained.bitcoin.Tx>(
-      process.env.VITE_UNCHAINED_BITCOINCASH_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_BITCOINCASH_WS_URL,
     );
 
     const bchAdapter = new bitcoin.ChainAdapter({
       providers: { http: bchHttp, ws: bchWs },
       coinName: 'BitcoinCash',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(bchChainId, bchAdapter);
@@ -83,19 +83,19 @@ export class UtxoChainAdapterService {
   private async initializeDogecoinAdapter(chainAdapterManager: Map<string, any>) {
     const dogeHttp = new unchained.bitcoin.V1Api(
       new unchained.bitcoin.Configuration({
-        basePath: process.env.VITE_UNCHAINED_DOGECOIN_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_DOGECOIN_HTTP_URL,
       }),
     );
 
     const dogeWs = new unchained.ws.Client<unchained.bitcoin.Tx>(
-      process.env.VITE_UNCHAINED_DOGECOIN_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_DOGECOIN_WS_URL,
     );
 
     const dogeAdapter = new bitcoin.ChainAdapter({
       providers: { http: dogeHttp, ws: dogeWs },
       coinName: 'Dogecoin',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(dogeChainId, dogeAdapter);
@@ -105,19 +105,19 @@ export class UtxoChainAdapterService {
   private async initializeLitecoinAdapter(chainAdapterManager: Map<string, any>) {
     const ltcHttp = new unchained.bitcoin.V1Api(
       new unchained.bitcoin.Configuration({
-        basePath: process.env.VITE_UNCHAINED_LITECOIN_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_LITECOIN_HTTP_URL,
       }),
     );
 
     const ltcWs = new unchained.ws.Client<unchained.bitcoin.Tx>(
-      process.env.VITE_UNCHAINED_LITECOIN_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_LITECOIN_WS_URL,
     );
 
     const ltcAdapter = new bitcoin.ChainAdapter({
       providers: { http: ltcHttp, ws: ltcWs },
       coinName: 'Litecoin',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(ltcChainId, ltcAdapter);

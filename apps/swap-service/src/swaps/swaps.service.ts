@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma, Swap } from '@prisma/client';
 import { EvmChainAdapterService } from '../lib/chain-adapters/evm.service';
 import { UtxoChainAdapterService } from '../lib/chain-adapters/utxo.service';
 import { CosmosSdkChainAdapterService } from '../lib/chain-adapters/cosmos-sdk.service';
@@ -7,9 +8,9 @@ import { SolanaChainAdapterService } from '../lib/chain-adapters/solana.service'
 import { SwapperName, swappers, SwapSource, SwapStatus } from '@shapeshiftoss/swapper';
 import { ChainId } from '@shapeshiftoss/caip';
 import { Asset } from '@shapeshiftoss/types';
-import { CreateSwapDto, SwapStatusResponse, UpdateSwapStatusDto } from '@shapeshift/shared-types';
 import { hashAccountId } from '@shapeshift/shared-utils';
 import { NotificationsServiceClient } from '@shapeshift/shared-utils';
+import { CreateSwapDto, SwapStatusResponse, UpdateSwapStatusDto } from '@shapeshift/shared-types';
 
 @Injectable()
 export class SwapsService {
@@ -31,8 +32,8 @@ export class SwapsService {
       const swap = await this.prisma.swap.create({
         data: {
           swapId: data.swapId,
-          sellAsset: JSON.stringify(data.sellAsset),
-          buyAsset: JSON.stringify(data.buyAsset),
+          sellAsset: data.sellAsset,
+          buyAsset: data.buyAsset,
           sellTxHash: data.sellTxHash,
           sellAmountCryptoBaseUnit: data.sellAmountCryptoBaseUnit,
           expectedBuyAmountCryptoBaseUnit: data.expectedBuyAmountCryptoBaseUnit,
@@ -44,7 +45,7 @@ export class SwapsService {
           buyAccountId: data.buyAccountId ? hashAccountId(data.buyAccountId) : null,
           receiveAddress: data.receiveAddress,
           isStreaming: data.isStreaming || false,
-          metadata: data.metadata || '{}',
+          metadata: data.metadata || {},
           userId: data.userId,
         },
       });
@@ -74,27 +75,24 @@ export class SwapsService {
       await this.sendStatusUpdateNotification(swap);
 
       this.logger.log(`Swap status updated: ${swap.swapId} -> ${data.status}`);
-      return swap;
+      return {
+        ...swap,
+        sellAsset: swap.sellAsset as Asset,
+        buyAsset: swap.buyAsset as Asset,
+      };
     } catch (error) {
       this.logger.error('Failed to update swap status', error);
       throw error;
     }
   }
 
-  private async sendStatusUpdateNotification(swap: { 
-    id: string; 
-    userId: string; 
-    status: string; 
-    sellAsset: string; 
-    buyAsset: string; 
-  }) {
+  private async sendStatusUpdateNotification(swap: Pick<Swap, 'id' | 'userId' | 'status' | 'sellAsset' | 'buyAsset'>) {
     let title: string;
     let body: string;
     let type: 'SWAP_STATUS_UPDATE' | 'SWAP_COMPLETED' | 'SWAP_FAILED';
 
-    // Parse the Asset objects from JSON strings
-    const sellAsset: Asset = JSON.parse(swap.sellAsset);
-    const buyAsset: Asset = JSON.parse(swap.buyAsset);
+    const sellAsset = swap.sellAsset as Asset;
+    const buyAsset = swap.buyAsset as Asset;
 
     switch (swap.status) {
       case 'SUCCESS':
@@ -137,8 +135,8 @@ export class SwapsService {
 
     return swaps.map(swap => ({
       ...swap,
-      sellAsset: JSON.parse(swap.sellAsset) as Asset,
-      buyAsset: JSON.parse(swap.buyAsset) as Asset,
+      sellAsset: swap.sellAsset as Asset,
+      buyAsset: swap.buyAsset as Asset,
     }));
   }
 
@@ -155,8 +153,8 @@ export class SwapsService {
 
     return swaps.map(swap => ({
       ...swap,
-      sellAsset: JSON.parse(swap.sellAsset) as Asset,
-      buyAsset: JSON.parse(swap.buyAsset) as Asset,
+      sellAsset: swap.sellAsset,
+      buyAsset: swap.buyAsset,
     }));
   }
 
@@ -171,8 +169,8 @@ export class SwapsService {
 
     return swaps.map(swap => ({
       ...swap,
-      sellAsset: JSON.parse(swap.sellAsset) as Asset,
-      buyAsset: JSON.parse(swap.buyAsset) as Asset,
+      sellAsset: swap.sellAsset,
+      buyAsset: swap.buyAsset,
     }));
   }
 
@@ -188,8 +186,7 @@ export class SwapsService {
         throw new Error(`Swap not found: ${swapId}`);
       }
 
-      const sellAsset: Asset = JSON.parse(swap.sellAsset);
-      const buyAsset: Asset = JSON.parse(swap.buyAsset);
+      const sellAsset = swap.sellAsset as Asset;
 
       const swapper = swappers[swap.swapperName];
       
@@ -206,23 +203,10 @@ export class SwapsService {
         chainId: sellAsset.chainId as ChainId,
         address: swap.sellAccountId,
         swap: {
+          ...swap,
           id: swap.swapId,
-          sellAsset,
-          buyAsset,
-          sellAmountCryptoBaseUnit: swap.sellAmountCryptoBaseUnit,
-          expectedBuyAmountCryptoBaseUnit: swap.expectedBuyAmountCryptoBaseUnit,
-          sellAmountCryptoPrecision: swap.sellAmountCryptoPrecision,
-          expectedBuyAmountCryptoPrecision: swap.expectedBuyAmountCryptoPrecision,
-          source: swap.source as SwapSource,
-          swapperName: swap.swapperName as SwapperName,
-          sellAccountId: swap.sellAccountId,
-          buyAccountId: swap.buyAccountId || undefined,
-          receiveAddress: swap.receiveAddress || undefined,
-          isStreaming: swap.isStreaming,
-          metadata: swap.metadata ? JSON.parse(swap.metadata) : {},
           createdAt: swap.createdAt.getTime(),
           updatedAt: swap.updatedAt.getTime(),
-          status: swap.status as SwapStatus,
         },
         stepIndex: 0,
         config: {

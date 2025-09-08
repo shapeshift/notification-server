@@ -168,7 +168,6 @@ Notification {
   title: String
   body: String
   type: NotificationType
-  isRead: Boolean
   sentAt: DateTime
   deliveredAt: DateTime?
   userId: String (foreign key)

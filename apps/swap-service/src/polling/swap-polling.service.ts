@@ -12,8 +12,7 @@ export class SwapPollingService {
     private websocketGateway: WebsocketGateway,
   ) {}
 
-  // Poll pending swaps every 30 seconds
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_5_SECONDS)
   async pollPendingSwaps() {
     try {
       this.logger.log('Starting to poll pending swaps...');

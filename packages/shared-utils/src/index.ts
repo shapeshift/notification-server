@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import { fromAccountId } from '@shapeshiftoss/caip';
 
 // Hash utilities
 export const hashAccountId = (accountId: string, salt?: string): string => {
@@ -9,11 +10,12 @@ export const hashAccountId = (accountId: string, salt?: string): string => {
 
 // Validation utilities
 export const isValidAccountId = (accountId: string): boolean => {
-  return typeof accountId === 'string' && accountId.length > 0;
-};
-
-export const isValidUserId = (userId: string): boolean => {
-  return typeof userId === 'string' && userId.length > 0;
+  try {
+    fromAccountId(accountId);
+    return true
+  } catch (error) {
+    return false;
+  }
 };
 
 // Date utilities

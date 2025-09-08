@@ -11,7 +11,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@shapeshift/shared-types": "workspace:*"
+    "@shapeshift/shared-types": "workspace:*",
+    "axios": "^1.7.4"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",

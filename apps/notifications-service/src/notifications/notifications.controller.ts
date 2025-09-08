@@ -13,7 +13,6 @@ export class NotificationsController {
     body: string;
     type: NotificationType;
     swapId?: string;
-    deviceId?: string;
   }) {
     return this.notificationsService.createNotification(data);
   }
@@ -38,11 +37,6 @@ export class NotificationsController {
       userId,
       limit ? parseInt(limit) : 50,
     );
-  }
-
-  @Put(':notificationId/read')
-  async markNotificationAsRead(@Param('notificationId') notificationId: string) {
-    return this.notificationsService.markNotificationAsRead(notificationId);
   }
 
   @Get('devices/:userId')

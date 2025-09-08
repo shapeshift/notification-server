@@ -1,15 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { hashAccountId, isValidAccountId } from '@shapeshift/shared-utils';
 import { 
   CreateUserDto, 
   AddAccountIdDto, 
   RegisterDeviceDto,
-  User,
-  UserAccount,
-  Device,
   DeviceType
 } from '@shapeshift/shared-types';
-import { hashAccountId, isValidAccountId, isValidUserId } from '@shapeshift/shared-utils';
+import { User, UserAccount, Device } from '@prisma/client';
+
 
 @Injectable()
 export class UsersService {
@@ -20,26 +19,9 @@ export class UsersService {
   // Type assertion helpers for Prisma results
   private assertDeviceType(deviceType: string): DeviceType {
     if (deviceType === 'MOBILE' || deviceType === 'WEB') {
-      return deviceType as DeviceType;
+      return deviceType;
     }
     throw new Error(`Invalid device type: ${deviceType}`);
-  }
-
-  private mapPrismaUser(user: any): User {
-    return {
-      ...user,
-      devices: user.devices?.map((device: any) => ({
-        ...device,
-        deviceType: this.assertDeviceType(device.deviceType),
-      })) || [],
-    };
-  }
-
-  private mapPrismaDevice(device: any): Device {
-    return {
-      ...device,
-      deviceType: this.assertDeviceType(device.deviceType),
-    };
   }
 
   private async findUserByHashedAccountId(hashedAccountId: string) {
@@ -56,7 +38,7 @@ export class UsersService {
         devices: true,
       },
     });
-    return user ? this.mapPrismaUser(user) : null;
+    return user;
   }
 
   async createUser(data: CreateUserDto): Promise<User> {
@@ -100,10 +82,6 @@ export class UsersService {
 
   async addAccountIds(userId: string, accountIds: string[]): Promise<UserAccount[]> {
     try {
-      if (!isValidUserId(userId)) {
-        throw new Error('Invalid user ID');
-      }
-
       const hashedAccountIds = accountIds.map(id => {
         if (!isValidAccountId(id)) {
           throw new Error('Invalid account ID');
@@ -148,10 +126,6 @@ export class UsersService {
 
   async addAccountId(data: AddAccountIdDto): Promise<UserAccount> {
     try {
-      if (!isValidUserId(data.userId)) {
-        throw new Error('Invalid user ID');
-      }
-
       if (!isValidAccountId(data.accountId)) {
         throw new Error('Invalid account ID');
       }
@@ -186,10 +160,6 @@ export class UsersService {
   }
 
   async getUserById(userId: string): Promise<User | null> {
-    if (!isValidUserId(userId)) {
-      throw new Error('Invalid user ID');
-    }
-
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -197,7 +167,7 @@ export class UsersService {
         devices: true,
       },
     });
-    return user ? this.mapPrismaUser(user) : null;
+    return user;
   }
 
   async getUserByAccountId(accountId: string): Promise<User | null> {
@@ -220,7 +190,7 @@ export class UsersService {
         devices: true,
       },
     });
-    return user ? this.mapPrismaUser(user) : null;
+    return user;
   }
 
   async getAllUsers(limit = 50): Promise<User[]> {
@@ -234,7 +204,7 @@ export class UsersService {
       },
       orderBy: { createdAt: 'desc' },
     });
-    return users.map(user => this.mapPrismaUser(user));
+    return users;
   }
 
   async userExistsWithAccountId(accountId: string): Promise<boolean> {
@@ -320,10 +290,6 @@ export class UsersService {
 
   async registerDevice(data: RegisterDeviceDto): Promise<Device> {
     try {
-      if (!isValidUserId(data.userId)) {
-        throw new Error('Invalid user ID');
-      }
-
       // Check if user exists
       const user = await this.getUserById(data.userId);
       if (!user) {
@@ -347,7 +313,7 @@ export class UsersService {
       });
 
       this.logger.log(`Device registered: ${data.deviceToken} for user ${data.userId} (${data.deviceType})`);
-      return this.mapPrismaDevice(device);
+      return device;
     } catch (error) {
       this.logger.error('Failed to register device', error);
       throw error;
@@ -355,25 +321,17 @@ export class UsersService {
   }
 
   async getUserDevices(userId: string): Promise<Device[]> {
-    if (!isValidUserId(userId)) {
-      throw new Error('Invalid user ID');
-    }
-
     const devices = await this.prisma.device.findMany({
       where: {
         userId,
         isActive: true,
       },
     });
-    return devices.map(device => this.mapPrismaDevice(device));
+    return devices;
   }
 
   async removeDevice(userId: string, deviceId: string): Promise<{ success: boolean }> {
     try {
-      if (!isValidUserId(userId)) {
-        throw new Error('Invalid user ID');
-      }
-
       await this.prisma.device.updateMany({
         where: {
           id: deviceId,

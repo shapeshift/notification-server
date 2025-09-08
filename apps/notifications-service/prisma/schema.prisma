@@ -13,11 +13,9 @@ model Notification {
   title       String
   body        String
   type        String
-  isRead      Boolean          @default(false)
   sentAt      DateTime         @default(now())
   deliveredAt DateTime?
   userId      String
-  deviceId    String?
   swapId      String?
 
   @@map("notifications")

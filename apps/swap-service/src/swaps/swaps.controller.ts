@@ -1,8 +1,13 @@
 import { Controller, Post, Get, Put, Param, Body, Query } from '@nestjs/common';
 import { SwapsService } from './swaps.service';
 import { SwapPollingService } from '../polling/swap-polling.service';
-import { CreateSwapDto, UpdateSwapStatusDto } from '@shapeshift/shared-types';
+export { 
+  Swap, 
+  Notification,
+  Prisma 
+} from '@prisma/client';
 import { Asset } from '@shapeshiftoss/types';
+import { CreateSwapDto, UpdateSwapStatusDto } from '@shapeshift/shared-types';
 
 @Controller('swaps')
 export class SwapsController {
@@ -65,8 +70,8 @@ export class SwapsController {
 
     return {
       ...swap,
-      sellAsset: JSON.parse(swap.sellAsset) as Asset,
-      buyAsset: JSON.parse(swap.buyAsset) as Asset,
+      sellAsset: swap.sellAsset,
+      buyAsset: swap.buyAsset,
     };
   }
 }

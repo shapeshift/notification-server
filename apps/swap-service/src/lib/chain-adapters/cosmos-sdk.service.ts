@@ -37,17 +37,17 @@ export class CosmosSdkChainAdapterService {
   private async initializeCosmosAdapter(chainAdapterManager: Map<string, any>) {
     const cosmosHttp = new unchained.cosmos.V1Api(
       new unchained.cosmos.Configuration({
-        basePath: process.env.VITE_UNCHAINED_COSMOS_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_COSMOS_HTTP_URL,
       }),
     );
 
     const cosmosWs = new unchained.ws.Client<unchained.cosmos.Tx>(
-      process.env.VITE_UNCHAINED_COSMOS_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_COSMOS_WS_URL,
     );
 
     const cosmosAdapter = new cosmos.ChainAdapter({
       providers: { http: cosmosHttp, ws: cosmosWs },
-      midgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
+      midgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
       coinName: 'Cosmos',
     });
 
@@ -74,8 +74,8 @@ export class CosmosSdkChainAdapterService {
 
     const thorchainAdapter = new thorchain.ChainAdapter({
       providers: { http, ws },
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
       coinName: 'THOR',
       httpV1,
     });
@@ -87,17 +87,17 @@ export class CosmosSdkChainAdapterService {
   private async initializeMayachainAdapter(chainAdapterManager: Map<string, any>) {
     const mayachainHttp = new unchained.mayachain.V1Api(
       new unchained.mayachain.Configuration({
-        basePath: process.env.VITE_UNCHAINED_MAYACHAIN_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_MAYACHAIN_HTTP_URL,
       }),
     );
 
     const mayachainWs = new unchained.ws.Client<unchained.cosmos.Tx>(
-      process.env.VITE_UNCHAINED_MAYACHAIN_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_MAYACHAIN_WS_URL,
     );
 
     const mayachainAdapter = new mayachain.ChainAdapter({
       providers: { http: mayachainHttp, ws: mayachainWs },
-      midgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      midgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
       coinName: 'MAYA',
     });
 

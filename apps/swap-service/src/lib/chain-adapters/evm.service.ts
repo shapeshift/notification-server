@@ -57,19 +57,19 @@ export class EvmChainAdapterService {
   private async initializeEthereumAdapter(chainAdapterManager: Map<string, any>) {
     const ethereumHttp = new unchained.ethereum.V1Api(
       new unchained.ethereum.Configuration({
-        basePath: process.env.VITE_UNCHAINED_ETHEREUM_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_ETHEREUM_HTTP_URL,
       }),
     );
 
     const ethereumWs = new unchained.ws.Client<unchained.ethereum.Tx>(
-      process.env.VITE_UNCHAINED_ETHEREUM_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_ETHEREUM_WS_URL,
     );
 
     const ethereumAdapter = new ethereum.ChainAdapter({
       providers: { http: ethereumHttp, ws: ethereumWs },
-      rpcUrl: process.env.VITE_ETHEREUM_NODE_URL || 'https://ethereum.rpc.url',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      rpcUrl: process.env.VITE_ETHEREUM_NODE_URL,
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(ethChainId, ethereumAdapter);
@@ -79,19 +79,19 @@ export class EvmChainAdapterService {
   private async initializeAvalancheAdapter(chainAdapterManager: Map<string, any>) {
     const avalancheHttp = new unchained.ethereum.V1Api(
       new unchained.ethereum.Configuration({
-        basePath: process.env.VITE_UNCHAINED_AVALANCHE_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_AVALANCHE_HTTP_URL,
       }),
     );
 
     const avalancheWs = new unchained.ws.Client<unchained.ethereum.Tx>(
-      process.env.VITE_UNCHAINED_AVALANCHE_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_AVALANCHE_WS_URL,
     );
 
     const avalancheAdapter = new ethereum.ChainAdapter({
       providers: { http: avalancheHttp, ws: avalancheWs },
-      rpcUrl: process.env.VITE_AVALANCHE_NODE_URL || 'https://avalanche.rpc.url',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      rpcUrl: process.env.VITE_AVALANCHE_NODE_URL,
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(avalancheChainId, avalancheAdapter);
@@ -101,19 +101,19 @@ export class EvmChainAdapterService {
   private async initializeOptimismAdapter(chainAdapterManager: Map<string, any>) {
     const optimismHttp = new unchained.ethereum.V1Api(
       new unchained.ethereum.Configuration({
-        basePath: process.env.VITE_UNCHAINED_OPTIMISM_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_OPTIMISM_HTTP_URL,
       }),
     );
 
     const optimismWs = new unchained.ws.Client<unchained.ethereum.Tx>(
-      process.env.VITE_UNCHAINED_OPTIMISM_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_OPTIMISM_WS_URL,
     );
 
     const optimismAdapter = new ethereum.ChainAdapter({
       providers: { http: optimismHttp, ws: optimismWs },
-      rpcUrl: process.env.VITE_OPTIMISM_NODE_URL || 'https://optimism.rpc.url',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      rpcUrl: process.env.VITE_OPTIMISM_NODE_URL,
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(optimismChainId, optimismAdapter);
@@ -123,19 +123,19 @@ export class EvmChainAdapterService {
   private async initializeBscAdapter(chainAdapterManager: Map<string, any>) {
     const bscHttp = new unchained.ethereum.V1Api(
       new unchained.ethereum.Configuration({
-        basePath: process.env.VITE_UNCHAINED_BNBSMARTCHAIN_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_BNBSMARTCHAIN_HTTP_URL,
       }),
     );
 
     const bscWs = new unchained.ws.Client<unchained.ethereum.Tx>(
-      process.env.VITE_UNCHAINED_BNBSMARTCHAIN_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_BNBSMARTCHAIN_WS_URL,
     );
 
     const bscAdapter = new ethereum.ChainAdapter({
       providers: { http: bscHttp, ws: bscWs },
-      rpcUrl: process.env.VITE_BNBSMARTCHAIN_NODE_URL || 'https://bsc.rpc.url',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      rpcUrl: process.env.VITE_BNBSMARTCHAIN_NODE_URL,
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(bscChainId, bscAdapter);
@@ -145,19 +145,19 @@ export class EvmChainAdapterService {
   private async initializePolygonAdapter(chainAdapterManager: Map<string, any>) {
     const polygonHttp = new unchained.ethereum.V1Api(
       new unchained.ethereum.Configuration({
-        basePath: process.env.VITE_UNCHAINED_POLYGON_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_POLYGON_HTTP_URL,
       }),
     );
 
     const polygonWs = new unchained.ws.Client<unchained.ethereum.Tx>(
-      process.env.VITE_UNCHAINED_POLYGON_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_POLYGON_WS_URL,
     );
 
     const polygonAdapter = new ethereum.ChainAdapter({
       providers: { http: polygonHttp, ws: polygonWs },
-      rpcUrl: process.env.VITE_POLYGON_NODE_URL || 'https://polygon.rpc.url',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      rpcUrl: process.env.VITE_POLYGON_NODE_URL,
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(polygonChainId, polygonAdapter);
@@ -167,19 +167,19 @@ export class EvmChainAdapterService {
   private async initializeGnosisAdapter(chainAdapterManager: Map<string, any>) {
     const gnosisHttp = new unchained.ethereum.V1Api(
       new unchained.ethereum.Configuration({
-        basePath: process.env.VITE_UNCHAINED_GNOSIS_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_GNOSIS_HTTP_URL,
       }),
     );
 
     const gnosisWs = new unchained.ws.Client<unchained.ethereum.Tx>(
-      process.env.VITE_UNCHAINED_GNOSIS_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_GNOSIS_WS_URL,
     );
 
     const gnosisAdapter = new ethereum.ChainAdapter({
       providers: { http: gnosisHttp, ws: gnosisWs },
-      rpcUrl: process.env.VITE_GNOSIS_NODE_URL || 'https://gnosis.rpc.url',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      rpcUrl: process.env.VITE_GNOSIS_NODE_URL,
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(gnosisChainId, gnosisAdapter);
@@ -189,19 +189,19 @@ export class EvmChainAdapterService {
   private async initializeArbitrumAdapter(chainAdapterManager: Map<string, any>) {
     const arbitrumHttp = new unchained.ethereum.V1Api(
       new unchained.ethereum.Configuration({
-        basePath: process.env.VITE_UNCHAINED_ARBITRUM_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_ARBITRUM_HTTP_URL,
       }),
     );
 
     const arbitrumWs = new unchained.ws.Client<unchained.ethereum.Tx>(
-      process.env.VITE_UNCHAINED_ARBITRUM_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_ARBITRUM_WS_URL,
     );
 
     const arbitrumAdapter = new ethereum.ChainAdapter({
       providers: { http: arbitrumHttp, ws: arbitrumWs },
-      rpcUrl: process.env.VITE_ARBITRUM_NODE_URL || 'https://arbitrum.rpc.url',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      rpcUrl: process.env.VITE_ARBITRUM_NODE_URL,
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(arbitrumChainId, arbitrumAdapter);
@@ -211,19 +211,19 @@ export class EvmChainAdapterService {
   private async initializeArbitrumNovaAdapter(chainAdapterManager: Map<string, any>) {
     const arbitrumNovaHttp = new unchained.ethereum.V1Api(
       new unchained.ethereum.Configuration({
-        basePath: process.env.VITE_UNCHAINED_ARBITRUM_NOVA_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_ARBITRUM_NOVA_HTTP_URL,
       }),
     );
 
     const arbitrumNovaWs = new unchained.ws.Client<unchained.ethereum.Tx>(
-      process.env.VITE_UNCHAINED_ARBITRUM_NOVA_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_ARBITRUM_NOVA_WS_URL,
     );
 
     const arbitrumNovaAdapter = new ethereum.ChainAdapter({
       providers: { http: arbitrumNovaHttp, ws: arbitrumNovaWs },
-      rpcUrl: process.env.VITE_ARBITRUM_NOVA_NODE_URL || 'https://arbitrum-nova.rpc.url',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      rpcUrl: process.env.VITE_ARBITRUM_NOVA_NODE_URL,
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(arbitrumNovaChainId, arbitrumNovaAdapter);
@@ -233,19 +233,19 @@ export class EvmChainAdapterService {
   private async initializeBaseAdapter(chainAdapterManager: Map<string, any>) {
     const baseHttp = new unchained.ethereum.V1Api(
       new unchained.ethereum.Configuration({
-        basePath: process.env.VITE_UNCHAINED_BASE_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_BASE_HTTP_URL,
       }),
     );
 
     const baseWs = new unchained.ws.Client<unchained.ethereum.Tx>(
-      process.env.VITE_UNCHAINED_BASE_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_BASE_WS_URL,
     );
 
     const baseAdapter = new ethereum.ChainAdapter({
       providers: { http: baseHttp, ws: baseWs },
-      rpcUrl: process.env.VITE_BASE_NODE_URL || 'https://base.rpc.url',
-      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL || 'https://midgard.thorchain.info',
-      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL || 'https://midgard.mayachain.info',
+      rpcUrl: process.env.VITE_BASE_NODE_URL,
+      thorMidgardUrl: process.env.VITE_THORCHAIN_MIDGARD_URL,
+      mayaMidgardUrl: process.env.VITE_MAYACHAIN_MIDGARD_URL,
     });
 
     chainAdapterManager.set(baseChainId, baseAdapter);

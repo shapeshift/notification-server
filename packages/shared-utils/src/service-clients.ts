@@ -1,77 +1,57 @@
+import axios, { AxiosInstance } from 'axios';
 import { getRequiredEnvVar } from './index';
+import { User, Device, CreateNotificationDto } from '@shapeshift/shared-types';
 
 export class UserServiceClient {
-  private readonly baseUrl: string;
+  private readonly axios: AxiosInstance;
 
   constructor() {
-    this.baseUrl = getRequiredEnvVar('USER_SERVICE_URL');
-  }
-
-  async getUserById(userId: string) {
-    const response = await fetch(`${this.baseUrl}/users/${userId}`);
-    if (!response.ok) {
-      throw new Error(`Failed to get user: ${response.statusText}`);
-    }
-    return response.json();
-  }
-
-  async getUserByAccountId(accountId: string) {
-    const response = await fetch(`${this.baseUrl}/users/account/${accountId}`);
-    if (!response.ok) {
-      throw new Error(`Failed to get user by account ID: ${response.statusText}`);
-    }
-    return response.json();
-  }
-
-  async getOrCreateUserByAccountIds(accountIds: string[]) {
-    const response = await fetch(`${this.baseUrl}/users/get-or-create`, {
-      method: 'POST',
+    const baseUrl = getRequiredEnvVar('USER_SERVICE_URL');
+    this.axios = axios.create({
+      baseURL: baseUrl,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ accountIds }),
     });
-    if (!response.ok) {
-      throw new Error(`Failed to get or create user: ${response.statusText}`);
-    }
-    return response.json();
   }
 
-  async getUserDevices(userId: string) {
-    const response = await fetch(`${this.baseUrl}/users/${userId}/devices`);
-    if (!response.ok) {
-      throw new Error(`Failed to get user devices: ${response.statusText}`);
-    }
-    return response.json();
+  async getUserById(userId: string): Promise<User> {
+    const response = await this.axios.get<User>(`/users/${userId}`);
+    return response.data;
+  }
+
+  async getUserByAccountId(accountId: string): Promise<User> {
+    const response = await this.axios.get<User>(`/users/account/${accountId}`);
+    return response.data;
+  }
+
+  async getOrCreateUserByAccountIds(accountIds: string[]): Promise<User> {
+    const response = await this.axios.post<User>('/users/get-or-create', { accountIds });
+    return response.data;
+  }
+
+  async getUserDevices(userId: string): Promise<Device[]> {
+    const response = await this.axios.get<Device[]>(`/users/${userId}/devices`);
+    return response.data;
   }
 }
 
 export class NotificationsServiceClient {
-  private readonly baseUrl: string;
+  private readonly axios: AxiosInstance;
 
   constructor() {
-    this.baseUrl = getRequiredEnvVar('NOTIFICATIONS_SERVICE_URL');
-  }
-
-  async createNotification(data: {
-    userId: string;
-    title: string;
-    body: string;
-    type: 'SWAP_STATUS_UPDATE' | 'SWAP_COMPLETED' | 'SWAP_FAILED';
-    swapId?: string;
-    deviceId?: string;
-  }) {
-    const response = await fetch(`${this.baseUrl}/notifications`, {
-      method: 'POST',
+    const baseUrl = getRequiredEnvVar('NOTIFICATIONS_SERVICE_URL');
+    this.axios = axios.create({
+      baseURL: baseUrl,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      throw new Error(`Failed to create notification: ${response.statusText}`);
-    }
-    return response.json();
+  }
+
+  async createNotification(data: CreateNotificationDto) {
+    const response = await this.axios.post('/notifications', data);
+    return response.data;
   }
 
   async sendNotificationToUser(data: {
@@ -80,16 +60,7 @@ export class NotificationsServiceClient {
     body: string;
     data?: any;
   }) {
-    const response = await fetch(`${this.baseUrl}/notifications/send-to-user`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to send notification to user: ${response.statusText}`);
-    }
-    return response.json();
+    const response = await this.axios.post('/notifications/send-to-user', data);
+    return response.data;
   }
 }

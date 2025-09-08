@@ -10,6 +10,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { SwapsService } from '../swaps/swaps.service';
+import { Asset } from '@shapeshiftoss/types';
 
 interface AuthenticatedSocket extends Socket {
   userId?: string;
@@ -65,8 +66,8 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     id: string; 
     swapId: string; 
     status: string; 
-    sellAsset: string; 
-    buyAsset: string; 
+    sellAsset: Asset; 
+    buyAsset: Asset; 
     sellAmountCryptoBaseUnit: string; 
     expectedBuyAmountCryptoBaseUnit: string; 
     sellAccountId: string; 

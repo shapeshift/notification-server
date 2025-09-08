@@ -28,17 +28,17 @@ export class SolanaChainAdapterService {
   private async initializeSolanaAdapter(chainAdapterManager: Map<string, any>) {
     const solanaHttp = new unchained.solana.V1Api(
       new unchained.solana.Configuration({
-        basePath: process.env.VITE_UNCHAINED_SOLANA_HTTP_URL || 'https://api.shapeshift.com',
+        basePath: process.env.VITE_UNCHAINED_SOLANA_HTTP_URL,
       }),
     );
 
     const solanaWs = new unchained.ws.Client<unchained.solana.Tx>(
-      process.env.VITE_UNCHAINED_SOLANA_WS_URL || 'wss://api.shapeshift.com',
+      process.env.VITE_UNCHAINED_SOLANA_WS_URL,
     );
 
     const solanaAdapter = new solana.ChainAdapter({
       providers: { http: solanaHttp, ws: solanaWs },
-      rpcUrl: process.env.VITE_SOLANA_NODE_URL || 'https://solana.rpc.url',
+      rpcUrl: process.env.VITE_SOLANA_NODE_URL,
     });
 
     chainAdapterManager.set(solanaChainId, solanaAdapter);
