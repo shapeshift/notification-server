@@ -11,9 +11,12 @@ import { EvmChainAdapterService } from './lib/chain-adapters/evm.service';
 import { UtxoChainAdapterService } from './lib/chain-adapters/utxo.service';
 import { CosmosSdkChainAdapterService } from './lib/chain-adapters/cosmos-sdk.service';
 import { SolanaChainAdapterService } from './lib/chain-adapters/solana.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ScheduleModule.forRoot()],
+  imports: [ScheduleModule.forRoot(), ConfigModule.forRoot({
+    envFilePath: '../../.env',
+  })],
   controllers: [SwapsController],
   providers: [
     PrismaService,

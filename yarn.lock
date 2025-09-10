@@ -7943,6 +7943,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:^17.2.2":
+  version: 17.2.2
+  resolution: "dotenv@npm:17.2.2"
+  checksum: 10/258210c403a426e887f0fb63d1cddb2e7dcc028974a38a4a440411b651b9c588ee4e8605e252d87d15489b3e311d7ba56d588d6cfda1b11bfbf494dd7b3ef2a3
+  languageName: node
+  linkType: hard
+
 "drbg.js@npm:^1.0.1":
   version: 1.0.1
   resolution: "drbg.js@npm:1.0.1"
@@ -14567,6 +14574,7 @@ __metadata:
     class-validator: "npm:^0.14.2"
     coinselect: "npm:^3.1.13"
     dayjs: "npm:^1.11.13"
+    dotenv: "npm:^17.2.2"
     eslint: "npm:^9.18.0"
     eslint-config-prettier: "npm:^10.0.1"
     eslint-plugin-prettier: "npm:^5.2.2"
